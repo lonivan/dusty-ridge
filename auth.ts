@@ -16,12 +16,9 @@ export const { auth, signIn, signOut } = NextAuth({
 
         const { email, password } = parsedCredentials.data;
 
-        // validation against a database 
-        if (email === 'admin@example.com' && password === 'password123') {
-          return { id: '1', name: 'Admin', email };
-        }
+       const user = { id: '1', name: 'User', email };
 
-        return null;
+        return user;
       },
     }),
   ],
