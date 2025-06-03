@@ -2,24 +2,22 @@ import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
- 
-export const { auth, signIn, signOut } = NextAuth({
-  ...authConfig,
-  providers: [
-    Credentials({
-      async authorize(credentials, req) {
-        const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
-          .safeParse(credentials);
 
-        if (!parsedCredentials.success) return null;
+Credentials({
+  async authorize(credentials) {
+    const parsed = z
+      .object({ email: z.string().email(), password: z.string().min(6) })
+      .safeParse(credentials);
 
-        const { email, password } = parsedCredentials.data;
+    if (!parsed.success) return null;
 
-       const user = { id: '1', name: 'User', email };
+    const { email, password } = parsed.data;
 
-        return user;
-      },
-    }),
-  ],
-});
+    // Simulate user check
+    if (email === 'admin@example.com' && password === 'password123') {
+      return { id: '1', name: 'Admin', email }; // must match `User` type
+    }
+
+    return null;
+  }
+})
